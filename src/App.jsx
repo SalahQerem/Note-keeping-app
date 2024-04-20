@@ -1,9 +1,12 @@
 import "./App.css";
+import NavBar from "./components/NavBar/NavBar.jsx";
+import Notes from "./components/Notes/Notes.jsx";
 
 function App() {
   return (
     <>
-      <h1 className="font-semibold text-red-500">Salah</h1>
+      <NavBar />
+      <Notes />
     </>
   );
 }
