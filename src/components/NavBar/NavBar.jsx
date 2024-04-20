@@ -10,7 +10,7 @@ import { ThemeProvider } from "@emotion/react";
 function NavBar() {
   const Search = styled("div")(({ theme }) => ({
     position: "relative",
-    borderRadius: "10px",
+    borderRadius: "5px",
     marginLeft: 0,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
