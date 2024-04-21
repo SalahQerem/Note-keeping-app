@@ -7,7 +7,7 @@ const Note = ({
   content,
   creationDate,
   backgroundColor,
-  handleDeletion,
+  deleteHandler,
   updateHandler,
 }) => {
   let dateObj = new Date(creationDate);
@@ -27,7 +27,13 @@ const Note = ({
           <span>{date}</span>
           <span>{time}</span>
         </p>
-        <button onClick={handleDeletion} className={`${NoteStyle.deleteBtn}`}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteHandler();
+          }}
+          className={`${NoteStyle.deleteBtn}`}
+        >
           <DeleteIcon />
         </button>
       </div>

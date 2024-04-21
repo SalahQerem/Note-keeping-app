@@ -96,13 +96,12 @@ const Notes = () => {
     fetchTodos(page, limit, title);
   };
 
-  const handleDeletion = (note) => {
-    openDeleteModal();
+  const deleteHandler = (note) => {
     setNoteToEdit({ ...note });
+    openDeleteModal();
   };
 
-  const DeleteHandler = async (e) => {
-    e.stopPrpagation();
+  const handleDelete = async () => {
     const res = await axios.delete(
       `https://note-keeping-api.onrender.com/notes/${noteToEdit._id}`
     );
@@ -229,13 +228,13 @@ const Notes = () => {
                     <button
                       type="submit"
                       disabled={!isValidNewNoteInputs}
-                      className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      className="text-white rounded-md px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed"
                     >
                       Add Note
                     </button>
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
                       onClick={openCancelAddNoteModal}
                     >
                       Cancel
@@ -298,13 +297,12 @@ const Notes = () => {
               notes.map(({ _id, title, content, createdAt }, index) => {
                 return (
                   <Note
-                    id={_id}
                     key={_id}
                     title={title}
                     content={content}
                     creationDate={createdAt}
                     backgroundColor={backgroundColors[index % 10]}
-                    handleDeletion={() => handleDeletion({ _id, title })}
+                    deleteHandler={() => deleteHandler({ _id, title, content })}
                     updateHandler={() => updateHandler({ _id, title, content })}
                   />
                 );
@@ -340,14 +338,14 @@ const Notes = () => {
         <div className="mt-4 flex justify-end gap-2">
           <button
             type="button"
-            className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            onClick={DeleteHandler}
+            className="text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
+            onClick={handleDelete}
           >
             Yes, Sure!
           </button>
           <button
             type="button"
-            className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
             onClick={closeDeleteModal}
           >
             Cancel
@@ -374,14 +372,14 @@ const Notes = () => {
         <div className="mt-4 flex justify-end gap-2">
           <button
             type="button"
-            className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
             onClick={handleNewNoteCancel}
           >
             Yes, Sure!
           </button>
           <button
             type="button"
-            className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
             onClick={closeCancelAddNoteModal}
           >
             Cancel
@@ -426,14 +424,14 @@ const Notes = () => {
           <div className="mt-4 flex justify-end gap-2">
             <button
               type="submit"
-              className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              className="text-white rounded-md px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed"
               disabled={!isValidEditNoteInputs}
             >
               Update
             </button>
             <button
               type="button"
-              className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
               onClick={closeEditModal}
             >
               Cancel
