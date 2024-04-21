@@ -1,4 +1,5 @@
 import { InputBase, createTheme, styled } from "@mui/material";
+import { toast } from "react-toastify";
 
 export const backgroundColors = [
   "#FFFFFF",
@@ -62,3 +63,16 @@ export const theme = createTheme({
     },
   },
 });
+
+export const CustomAlert = (message) => {
+  toast.success(message, {
+    position: "top-left",
+    autoClose: true,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+};

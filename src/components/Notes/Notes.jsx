@@ -14,19 +14,33 @@ import {
   Select,
 } from "@mui/material";
 import {
+  CustomAlert,
   Search,
   SearchIconWrapper,
   StyledInputBase,
   backgroundColors,
   theme,
 } from "./utils.js";
+import CustomDialog from "../CustomDialog/CustomDialog.jsx";
+import { Dialog } from "@headlessui/react";
 
-function Notes() {
-  const [notes, setNotes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [numOfPages, setNumOfPages] = useState(10);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+const Notes = () => {
+  let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  let [notes, setNotes] = useState([]);
+  let [isLoading, setIsLoading] = useState(true);
+  let [numOfPages, setNumOfPages] = useState(10);
+  let [page, setPage] = useState(1);
+  let [limit, setLimit] = useState(5);
+  let [query, setQuery] = useState("");
+  let [noteToEdit, setNoteToEdit] = useState({});
+
+  function openDeleteModal() {
+    setIsDeleteModalOpen(true);
+  }
+
+  function closeDeleteModal() {
+    setIsDeleteModalOpen(false);
+  }
 
   const fetchTodos = async (page = 1, limit = 5, title = "") => {
     setIsLoading(true);
@@ -40,17 +54,35 @@ function Notes() {
 
   const handlePageChange = (e, value) => {
     setPage(value);
-    fetchTodos(value, limit);
+    fetchTodos(value);
   };
 
-  const handleLimitChange = (e, value) => {
-    setLimit(value.props.value);
+  const handleLimitChange = (e, { props }) => {
+    const limit = props.value;
+    setLimit(limit);
     fetchTodos(page, limit);
   };
 
   const handleSearch = (e) => {
     const title = e.target.value;
+    setQuery(title);
     fetchTodos(page, limit, title);
+  };
+
+  const handleDeletion = (note) => {
+    openDeleteModal();
+    setNoteToEdit({ ...note });
+  };
+
+  const DeleteHandler = async () => {
+    const res = await axios.delete(
+      `https://note-keeping-api.onrender.com/notes/${noteToEdit._id}`
+    );
+    if (res.status === 204) {
+      closeDeleteModal();
+      fetchTodos(page, limit, query);
+      CustomAlert(`${noteToEdit.title} successfully deleted`);
+    }
   };
 
   useEffect(() => {
@@ -147,14 +179,16 @@ function Notes() {
             {isLoading ? (
               <Loader />
             ) : (
-              notes.map(({ title, content, createdAt }, index) => {
+              notes.map(({ _id, title, content, createdAt }, index) => {
                 return (
                   <Note
-                    key={index}
+                    id={_id}
+                    key={_id}
                     title={title}
                     content={content}
                     creationDate={createdAt}
                     backgroundColor={backgroundColors[index % 10]}
+                    handleDeletion={() => handleDeletion({ _id, title })}
                   />
                 );
               })
@@ -169,8 +203,42 @@ function Notes() {
           />
         </div>
       </div>
+      <CustomDialog
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        closeModal={closeDeleteModal}
+      >
+        <Dialog.Title
+          as="h3"
+          className="text-lg font-medium leading-6 text-gray-900"
+        >
+          Note Deletion
+        </Dialog.Title>
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">
+            {`Are you sure you wish to delete ${noteToEdit.title} Note ?`}
+          </p>
+        </div>
+
+        <div className="mt-4 flex justify-end gap-2">
+          <button
+            type="button"
+            className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            onClick={closeDeleteModal}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            onClick={DeleteHandler}
+          >
+            Yes, Sure!
+          </button>
+        </div>
+      </CustomDialog>
     </div>
   );
-}
+};
 
 export default Notes;

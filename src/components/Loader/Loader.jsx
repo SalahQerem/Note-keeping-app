@@ -1,6 +1,6 @@
 import React from "react";
 
-function Loader() {
+const Loader = () => {
   return (
     <div className="flex gap-2 justify-center w-full flex-wrap">
       {[1, 2, 3, 4, 5].map((item) => (
@@ -21,6 +21,6 @@ function Loader() {
       ))}
     </div>
   );
-}
+};
 
 export default Loader;

@@ -1,23 +1,36 @@
 import React from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import NoteStyle from "./note.module.css";
 
-function Note({ title, content, creationDate, backgroundColor }) {
+const Note = ({
+  title,
+  content,
+  creationDate,
+  backgroundColor,
+  handleDeletion,
+}) => {
   let dateObj = new Date(creationDate);
   let date = dateObj.toLocaleDateString();
   let time = dateObj.toLocaleTimeString();
 
   return (
     <div
-      className="px-3 py-1 rounded-lg border border-slate-300 flex flex-col gap-3 min-w-[19.2%]"
+      className={`${NoteStyle.note} px-3 pb-2 pt-1 rounded-lg border border-slate-300 flex flex-col gap-2 min-w-[19.2%]`}
       style={{ backgroundColor: backgroundColor }}
     >
       <h2 className="text-lg font-semibold">{title}</h2>
       <p>{content}</p>
-      <p className="text-xs flex gap-3">
-        <span>{date}</span>
-        <span>{time}</span>
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs flex flex-col gap-1">
+          <span>{date}</span>
+          <span>{time}</span>
+        </p>
+        <button onClick={handleDeletion} className={`${NoteStyle.deleteBtn}`}>
+          <DeleteIcon />
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default Note;

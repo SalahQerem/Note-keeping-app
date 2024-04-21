@@ -1,0 +1,10 @@
+.deleteBtn {
+  visibility: hidden;
+  opacity: 0;
+  transition: ease-in-out 0.2s;
+}
+
+.note:hover .deleteBtn {
+  visibility: visible;
+  opacity: 1;
+}
