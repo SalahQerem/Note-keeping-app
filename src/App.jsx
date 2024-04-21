@@ -5,7 +5,6 @@ import Notes from "./components/Notes/Notes.jsx";
 function App() {
   return (
     <>
-      <NavBar />
       <Notes />
     </>
   );
