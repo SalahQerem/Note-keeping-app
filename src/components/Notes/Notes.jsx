@@ -25,7 +25,9 @@ import CustomDialog from "../CustomDialog/CustomDialog.jsx";
 import { Dialog } from "@headlessui/react";
 
 const Notes = () => {
+  const defualtNote = { title: "", content: "" };
   let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  let [isEditModalOpen, setIsEditModalOpen] = useState(false);
   let [isCancelAddNoteModalOpen, setIsCancelAddNoteModalOpen] = useState(false);
   let [notes, setNotes] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
@@ -33,14 +35,15 @@ const Notes = () => {
   let [page, setPage] = useState(1);
   let [limit, setLimit] = useState(5);
   let [query, setQuery] = useState("");
-  let [noteToEdit, setNoteToEdit] = useState({});
+  let [noteToEdit, setNoteToEdit] = useState(defualtNote);
   let [isNewNoteInputsExpanded, setIsNewNoteInputsExpanded] = useState(false);
   let [newNoteTitle, setNewNoteTitle] = useState("");
   let [newNoteContent, setNewNoteContent] = useState("");
-  let [isValidInputs, setIsValidInputs] = useState(false);
 
   let isValidNewNoteInputs =
     newNoteTitle.trim() !== "" && newNoteContent.trim() !== "";
+  let isValidEditNoteInputs =
+    noteToEdit.title.trim() !== "" && noteToEdit.content.trim() !== "";
 
   function openDeleteModal() {
     setIsDeleteModalOpen(true);
@@ -56,6 +59,14 @@ const Notes = () => {
 
   function closeCancelAddNoteModal() {
     setIsCancelAddNoteModalOpen(false);
+  }
+
+  function openEditModal() {
+    setIsEditModalOpen(true);
+  }
+
+  function closeEditModal() {
+    setIsEditModalOpen(false);
   }
 
   const fetchTodos = async (page = 1, limit = 5, title = "") => {
@@ -90,7 +101,8 @@ const Notes = () => {
     setNoteToEdit({ ...note });
   };
 
-  const DeleteHandler = async () => {
+  const DeleteHandler = async (e) => {
+    e.stopPrpagation();
     const res = await axios.delete(
       `https://note-keeping-api.onrender.com/notes/${noteToEdit._id}`
     );
@@ -106,7 +118,7 @@ const Notes = () => {
   };
 
   const handleNewNoteCancel = () => {
-    setContent("");
+    setNewNoteContent("");
     setNewNoteTitle("");
     closeCancelAddNoteModal();
     toggleExpandedInputs();
@@ -127,6 +139,27 @@ const Notes = () => {
       setNewNoteContent("");
       closeCancelAddNoteModal();
       toggleExpandedInputs();
+    }
+  };
+
+  const updateHandler = (note) => {
+    setNoteToEdit({ ...note });
+    openEditModal();
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    const { _id, title, content } = noteToEdit;
+    const res = await axios.put(
+      `https://note-keeping-api.onrender.com/notes/${_id}`,
+      { title, content }
+    );
+
+    if (res.status === 204) {
+      CustomAlert("Your Note successfully updated");
+      closeEditModal();
+      setNoteToEdit(defualtNote);
+      fetchTodos(page, limit, query);
     }
   };
 
@@ -272,6 +305,7 @@ const Notes = () => {
                     creationDate={createdAt}
                     backgroundColor={backgroundColors[index % 10]}
                     handleDeletion={() => handleDeletion({ _id, title })}
+                    updateHandler={() => updateHandler({ _id, title, content })}
                   />
                 );
               })
@@ -353,6 +387,59 @@ const Notes = () => {
             Cancel
           </button>
         </div>
+      </CustomDialog>
+      <CustomDialog
+        isOpen={isEditModalOpen}
+        setIsOpen={setIsEditModalOpen}
+        closeModal={closeEditModal}
+      >
+        <Dialog.Title
+          as="h3"
+          className="text-lg font-medium leading-6 text-gray-900"
+        >
+          Update Note
+        </Dialog.Title>
+        <form onSubmit={handleUpdate}>
+          <div className="mt-5 flex flex-col gap-2">
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              value={noteToEdit.title}
+              onChange={(e) => {
+                setNoteToEdit({ ...noteToEdit, title: e.target.value });
+              }}
+              className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
+            />
+            <input
+              type="text"
+              name="content"
+              placeholder="Content"
+              value={noteToEdit.content}
+              onChange={(e) => {
+                setNoteToEdit({ ...noteToEdit, content: e.target.value });
+              }}
+              className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
+            />
+          </div>
+
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              type="submit"
+              className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              disabled={!isValidEditNoteInputs}
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              onClick={closeEditModal}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </CustomDialog>
     </div>
   );
