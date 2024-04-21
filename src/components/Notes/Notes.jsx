@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import Note from "../Note/Note.jsx";
 import axios from "axios";
 import Loader from "../Loader/Loader.jsx";
-import { Pagination } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+} from "@mui/material";
 
 function Notes() {
   const [notes, setNotes] = useState([]);
@@ -31,9 +38,14 @@ function Notes() {
     setIsLoading(false);
   };
 
-  const handleChange = (e, value) => {
+  const handlePageChange = (e, value) => {
     setPage(value);
     fetchTodos(value, limit);
+  };
+
+  const handleLimitChange = (e, value) => {
+    setLimit(value.props.value);
+    fetchTodos(page, value.props.value);
   };
 
   useEffect(() => {
@@ -43,14 +55,52 @@ function Notes() {
   return (
     <div className="w-[80%] mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
       <div>
-        <form action="" className="my-12 flex justify-center">
-          <input
-            type="text"
-            name="note"
-            placeholder="Take a note..."
-            className="border border-slate-300 w-[60%] rounded-md px-3 py-2 shadow-lg"
-          />
-        </form>
+        <div className="flex justify-between items-center">
+          <form action="" className="my-12 w-full">
+            <input
+              type="text"
+              name="note"
+              placeholder="Take a note..."
+              className="border border-slate-300 w-[80%] rounded-md px-3 py-2 shadow-lg"
+            />
+          </form>
+          <Box sx={{ maxWidth: 100 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={limit}
+                label="limit"
+                onChange={handleLimitChange}
+                sx={{
+                  height: "42px",
+                  textAlign: "center",
+                  width: "100px",
+                }}
+                MenuProps={{
+                  anchorOrigin: {
+                    vertical: "bottom",
+                    horizontal: "left",
+                  },
+                  transformOrigin: {
+                    vertical: "top",
+                    horizontal: "left",
+                  },
+                }}
+              >
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={7}>7</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+                <MenuItem value={9}>9</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </div>
         <div className="flex flex-wrap gap-2 items-start">
           {isLoading ? (
             <Loader />
@@ -70,7 +120,11 @@ function Notes() {
         </div>
       </div>
       <div className="flex justify-center py-3 mb-5">
-        <Pagination count={numOfPages} page={page} onChange={handleChange} />
+        <Pagination
+          count={numOfPages}
+          page={page}
+          onChange={handlePageChange}
+        />
       </div>
     </div>
   );

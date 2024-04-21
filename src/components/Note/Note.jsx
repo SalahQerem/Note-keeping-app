@@ -7,7 +7,7 @@ function Note({ title, content, creationDate, backgroundColor }) {
 
   return (
     <div
-      className="px-3 py-1 rounded-lg border border-slate-300 flex flex-col gap-3 min-w-[155px]"
+      className="px-3 py-1 rounded-lg border border-slate-300 flex flex-col gap-3 min-w-[19.2%]"
       style={{ backgroundColor: backgroundColor }}
     >
       <h2 className="text-lg font-semibold">{title}</h2>
