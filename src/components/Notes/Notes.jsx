@@ -26,6 +26,7 @@ import { Dialog } from "@headlessui/react";
 
 const Notes = () => {
   let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  let [isCancelAddNoteModalOpen, setIsCancelAddNoteModalOpen] = useState(false);
   let [notes, setNotes] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
   let [numOfPages, setNumOfPages] = useState(10);
@@ -33,6 +34,13 @@ const Notes = () => {
   let [limit, setLimit] = useState(5);
   let [query, setQuery] = useState("");
   let [noteToEdit, setNoteToEdit] = useState({});
+  let [isNewNoteInputsExpanded, setIsNewNoteInputsExpanded] = useState(false);
+  let [newNoteTitle, setNewNoteTitle] = useState("");
+  let [newNoteContent, setNewNoteContent] = useState("");
+  let [isValidInputs, setIsValidInputs] = useState(false);
+
+  let isValidNewNoteInputs =
+    newNoteTitle.trim() !== "" && newNoteContent.trim() !== "";
 
   function openDeleteModal() {
     setIsDeleteModalOpen(true);
@@ -40,6 +48,14 @@ const Notes = () => {
 
   function closeDeleteModal() {
     setIsDeleteModalOpen(false);
+  }
+
+  function openCancelAddNoteModal() {
+    setIsCancelAddNoteModalOpen(true);
+  }
+
+  function closeCancelAddNoteModal() {
+    setIsCancelAddNoteModalOpen(false);
   }
 
   const fetchTodos = async (page = 1, limit = 5, title = "") => {
@@ -85,6 +101,35 @@ const Notes = () => {
     }
   };
 
+  const toggleExpandedInputs = () => {
+    setIsNewNoteInputsExpanded((prev) => !prev);
+  };
+
+  const handleNewNoteCancel = () => {
+    setContent("");
+    setNewNoteTitle("");
+    closeCancelAddNoteModal();
+    toggleExpandedInputs();
+  };
+
+  const handleNewNoteSubmit = async (e) => {
+    e.preventDefault();
+    const res = await axios.post(
+      "https://note-keeping-api.onrender.com/notes",
+      {
+        title: newNoteTitle,
+        content: newNoteContent,
+      }
+    );
+    if (res.status === 201) {
+      CustomAlert("New Note successfully Added");
+      setNewNoteTitle("");
+      setNewNoteContent("");
+      closeCancelAddNoteModal();
+      toggleExpandedInputs();
+    }
+  };
+
   useEffect(() => {
     fetchTodos();
   }, []);
@@ -124,13 +169,55 @@ const Notes = () => {
       <div className="w-[80%] mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
         <div>
           <div className="flex justify-between items-center">
-            <form action="" className="my-12 w-full">
-              <input
-                type="text"
-                name="note"
-                placeholder="Take a note..."
-                className="border border-slate-300 w-[80%] rounded-md px-3 py-2 shadow-lg"
-              />
+            <form className="my-12 w-full" onSubmit={handleNewNoteSubmit}>
+              {isNewNoteInputsExpanded ? (
+                <div className="flex flex-col gap-2 w-[80%]">
+                  <input
+                    type="text"
+                    name="title"
+                    placeholder="Title"
+                    value={newNoteTitle}
+                    onChange={(e) => {
+                      setNewNoteTitle(e.target.value);
+                    }}
+                    className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
+                  />
+                  <input
+                    type="text"
+                    name="content"
+                    placeholder="Content"
+                    value={newNoteContent}
+                    onChange={(e) => {
+                      setNewNoteContent(e.target.value);
+                    }}
+                    className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
+                  />
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      type="submit"
+                      disabled={!isValidNewNoteInputs}
+                      className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    >
+                      Add Note
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      onClick={openCancelAddNoteModal}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="border border-slate-300 w-[80%] rounded-md px-4 py-2 shadow-lg text-left"
+                  onClick={toggleExpandedInputs}
+                >
+                  Take a note...
+                </button>
+              )}
             </form>
             <Box
               sx={{
@@ -140,7 +227,7 @@ const Notes = () => {
               }}
             >
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <InputLabel id="demo-simple-select-label">Limit</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -163,19 +250,15 @@ const Notes = () => {
                     },
                   }}
                 >
-                  <MenuItem value={3}>3</MenuItem>
-                  <MenuItem value={4}>4</MenuItem>
                   <MenuItem value={5}>5</MenuItem>
-                  <MenuItem value={6}>6</MenuItem>
-                  <MenuItem value={7}>7</MenuItem>
-                  <MenuItem value={8}>8</MenuItem>
-                  <MenuItem value={9}>9</MenuItem>
                   <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
                 </Select>
               </FormControl>
             </Box>
           </div>
-          <div className="flex flex-wrap gap-2 items-start">
+          <div id="notes" className="flex flex-wrap gap-2 items-start">
             {isLoading ? (
               <Loader />
             ) : (
@@ -223,17 +306,51 @@ const Notes = () => {
         <div className="mt-4 flex justify-end gap-2">
           <button
             type="button"
+            className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            onClick={DeleteHandler}
+          >
+            Yes, Sure!
+          </button>
+          <button
+            type="button"
             className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             onClick={closeDeleteModal}
           >
             Cancel
           </button>
+        </div>
+      </CustomDialog>
+      <CustomDialog
+        isOpen={isCancelAddNoteModalOpen}
+        setIsOpen={setIsCancelAddNoteModalOpen}
+        closeModal={closeCancelAddNoteModal}
+      >
+        <Dialog.Title
+          as="h3"
+          className="text-lg font-medium leading-6 text-gray-900"
+        >
+          New Note Cancelation
+        </Dialog.Title>
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">
+            {`Are you sure you wish to cancel this Note ?`}
+          </p>
+        </div>
+
+        <div className="mt-4 flex justify-end gap-2">
           <button
             type="button"
             className="text-white inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            onClick={DeleteHandler}
+            onClick={handleNewNoteCancel}
           >
             Yes, Sure!
+          </button>
+          <button
+            type="button"
+            className="inline-flex justify-center rounded-md border border-transparent bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-mediu focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            onClick={closeCancelAddNoteModal}
+          >
+            Cancel
           </button>
         </div>
       </CustomDialog>
