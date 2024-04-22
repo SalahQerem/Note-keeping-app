@@ -318,11 +318,7 @@ const Notes = () => {
           />
         </div>
       </div>
-      <CustomDialog
-        isOpen={isDeleteModalOpen}
-        setIsOpen={setIsDeleteModalOpen}
-        closeModal={closeDeleteModal}
-      >
+      <CustomDialog isOpen={isDeleteModalOpen} closeModal={closeDeleteModal}>
         <Dialog.Title
           as="h3"
           className="text-lg font-medium leading-6 text-gray-900"
@@ -354,7 +350,6 @@ const Notes = () => {
       </CustomDialog>
       <CustomDialog
         isOpen={isCancelAddNoteModalOpen}
-        setIsOpen={setIsCancelAddNoteModalOpen}
         closeModal={closeCancelAddNoteModal}
       >
         <Dialog.Title
@@ -386,11 +381,7 @@ const Notes = () => {
           </button>
         </div>
       </CustomDialog>
-      <CustomDialog
-        isOpen={isEditModalOpen}
-        setIsOpen={setIsEditModalOpen}
-        closeModal={closeEditModal}
-      >
+      <CustomDialog isOpen={isEditModalOpen} closeModal={closeEditModal}>
         <Dialog.Title
           as="h3"
           className="text-lg font-medium leading-6 text-gray-900"

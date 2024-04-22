@@ -1,7 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
-function CustomDialog({ children, isOpen, setIsOpen, closeModal }) {
+const CustomDialog = ({ children, isOpen, closeModal }) => {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -39,6 +39,6 @@ function CustomDialog({ children, isOpen, setIsOpen, closeModal }) {
       </Transition>
     </>
   );
-}
+};
 
 export default CustomDialog;
