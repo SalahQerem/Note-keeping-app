@@ -16,7 +16,7 @@ const Note = ({
 
   return (
     <div
-      className={`${NoteStyle.note} px-3 pb-2 pt-1 rounded-lg border border-slate-300 flex flex-col gap-2 min-w-[19.3%]`}
+      className={`${NoteStyle.note} px-3 pb-2 pt-1 rounded-lg border border-slate-300 flex flex-col gap-2 w-[19.3%]`}
       style={{ backgroundColor: backgroundColor }}
       onClick={updateHandler}
     >

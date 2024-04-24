@@ -134,6 +134,7 @@ const Notes = () => {
     );
     if (res.status === 201) {
       CustomAlert("New Note successfully Added");
+      fetchTodos(page, limit, query);
       setNewNoteTitle("");
       setNewNoteContent("");
       closeCancelAddNoteModal();
