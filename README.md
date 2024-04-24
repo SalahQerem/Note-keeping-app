@@ -25,4 +25,6 @@ Please refer to the documentation of each library for more information on how to
 
 <h4 align="left">Live Preview is available at https://note-keeping-app.onrender.com/</h4>
 
+## Snapshots
+
 <img src="./src/assets/home-snapshot.png" alt="home page"/>
