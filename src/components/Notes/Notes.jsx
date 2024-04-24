@@ -162,6 +162,20 @@ const Notes = () => {
     }
   };
 
+  const renderNotes = notes.map(({ _id, title, content, createdAt }, index) => {
+    return (
+      <Note
+        key={_id}
+        title={title}
+        content={content}
+        creationDate={createdAt}
+        backgroundColor={backgroundColors[index % 10]}
+        deleteHandler={() => deleteHandler({ _id, title, content })}
+        updateHandler={() => updateHandler({ _id, title, content })}
+      />
+    );
+  });
+
   useEffect(() => {
     fetchTodos();
   }, []);
@@ -291,23 +305,7 @@ const Notes = () => {
             </Box>
           </div>
           <div id="notes" className="flex flex-wrap gap-2 items-start">
-            {isLoading ? (
-              <Loader />
-            ) : (
-              notes.map(({ _id, title, content, createdAt }, index) => {
-                return (
-                  <Note
-                    key={_id}
-                    title={title}
-                    content={content}
-                    creationDate={createdAt}
-                    backgroundColor={backgroundColors[index % 10]}
-                    deleteHandler={() => deleteHandler({ _id, title, content })}
-                    updateHandler={() => updateHandler({ _id, title, content })}
-                  />
-                );
-              })
-            )}
+            {isLoading ? <Loader /> : renderNotes}
           </div>
         </div>
         <div className="flex justify-center py-3 mb-5">
