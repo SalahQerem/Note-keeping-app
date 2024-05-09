@@ -3,7 +3,7 @@ import "./App.css";
 import Notes from "./components/Notes/Notes.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@mui/material";
-import theme from "./theme/theme.js";
+import theme from "./Theme/theme.js";
 
 function App() {
   return (
