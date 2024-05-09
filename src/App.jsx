@@ -14,7 +14,11 @@ function App() {
   let [page, setPage] = useState(1);
   let [limit, setLimit] = useState(5);
 
-  const { fetchNotes, isFetching } = useGetNotes(setNotes, setNumOfPages);
+  const { fetchNotes, isFetching } = useGetNotes(
+    setNotes,
+    setNumOfPages,
+    setPage
+  );
 
   useEffect(() => {
     fetchNotes(page, limit);
