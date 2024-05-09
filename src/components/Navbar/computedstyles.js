@@ -1,17 +1,4 @@
-import { InputBase, createTheme, styled } from "@mui/material";
-import { toast } from "react-toastify";
-
-export const backgroundColors = [
-  "#FFFFFF",
-  "#F0F0F0",
-  "#FFFFE0",
-  "#87CEEB",
-  "#E6E6FA",
-  "#FFE5B4",
-  "#F5F5DC",
-  "#B0E0E6",
-  "#FFC0CB",
-];
+import { InputBase, styled } from "@mui/material";
 
 export const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -50,31 +37,3 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-
-export const theme = createTheme({
-  components: {
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#fff",
-          color: "#000",
-        },
-      },
-    },
-  },
-});
-
-export const CustomAlert = (message) => {
-  toast.success(message, {
-    position: "top-left",
-    autoClose: true,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  });
-};
-
-export const defualtNote = { title: "", content: "" };

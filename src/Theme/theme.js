@@ -11,6 +11,16 @@ const theme = createTheme({
       "Noto Color Emoji",
     ].join(","),
   },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#fff",
+          color: "#000",
+        },
+      },
+    },
+  },
 });
 
 export default theme;

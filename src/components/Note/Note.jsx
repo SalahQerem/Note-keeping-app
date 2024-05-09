@@ -17,7 +17,7 @@ const Note = ({
 
   return (
     <Box
-      className={`${NoteStyle.note} px-3 pb-2 pt-1 rounded-lg border border-slate-300 flex flex-col gap-2 w-[19.3%]`}
+      className={`${NoteStyle.note} px-3 pb-2 pt-1 rounded-lg border border-slate-300 flex flex-col gap-2 w-[19.3%] cursor-pointer`}
       style={{ backgroundColor: backgroundColor }}
       onClick={updateHandler}
     >
