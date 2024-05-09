@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CustomErrorAlert } from "../../utils/general.js";
+import { CustomErrorAlert } from "../utils/general.js";
 import axios from "axios";
 
 const useGetNotes = (setNotes, setNumOfPages) => {

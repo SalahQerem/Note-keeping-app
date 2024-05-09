@@ -6,30 +6,59 @@ import {
   Pagination,
   Select,
 } from "@mui/material";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import useDeleteNote from "../../hooks/useDeleteNote.js";
+import useUpdateNote from "../../hooks/useUpdateNote.js";
 import { backgroundColors, defaultNote } from "../../utils/general.js";
+import AddNoteForm from "../AddNoteForm/AddNoteForm.jsx";
 import Loader from "../Loader/Loader.jsx";
 import Note from "../Note/Note.jsx";
-import useGetNotes from "../hooks/useGetNotes.js";
-import useNotesModals from "../hooks/useNotesModals.js";
 import DeleteModal from "./Modals/DeleteModal.jsx";
 import EditModal from "./Modals/EditModal.jsx";
-import AddNoteForm from "../AddNoteForm/AddNoteForm.jsx";
 
-const Notes = ({ notes, setNotes }) => {
-  let [numOfPages, setNumOfPages] = useState(10);
-  let [page, setPage] = useState(1);
-  let [limit, setLimit] = useState(5);
-
+const Notes = ({
+  notes,
+  fetchNotes,
+  isFetching,
+  numOfPages,
+  limit,
+  setLimit,
+  page,
+  setPage,
+}) => {
+  let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  let [isEditModalOpen, setIsEditModalOpen] = useState(false);
   let [noteToEdit, setNoteToEdit] = useState(defaultNote);
 
-  const { fetchNotes, isFetching } = useGetNotes(setNotes, setNumOfPages);
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
 
-  const {
-    DeleteModal: { isDeleteModalOpen, openDeleteModal, closeDeleteModal },
-    EditModal: { isEditModalOpen, openEditModal, closeEditModal },
-  } = useNotesModals();
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const openEditModal = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const { deleteNote, isPending: isDeleting } = useDeleteNote(
+    fetchNotes,
+    page,
+    limit,
+    closeDeleteModal
+  );
+  const { updateNote, isPending: isUpdating } = useUpdateNote(
+    fetchNotes,
+    page,
+    limit,
+    setNoteToEdit,
+    closeEditModal
+  );
 
   const handlePageChange = (e, value) => {
     setPage(value);
@@ -48,14 +77,7 @@ const Notes = ({ notes, setNotes }) => {
   };
 
   const handleDelete = async () => {
-    const res = await axios.delete(
-      `https://note-keeping-api.onrender.com/notes/${noteToEdit._id}`
-    );
-    if (res.status === 204) {
-      closeDeleteModal();
-      fetchTodos(page, limit, query);
-      CustomAlert(`${noteToEdit.title} successfully deleted`);
-    }
+    deleteNote(noteToEdit);
   };
 
   const updateHandler = (note) => {
@@ -65,18 +87,7 @@ const Notes = ({ notes, setNotes }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const { _id, title, content } = noteToEdit;
-    const res = await axios.put(
-      `https://note-keeping-api.onrender.com/notes/${_id}`,
-      { title, content }
-    );
-
-    if (res.status === 204) {
-      CustomAlert("Your Note successfully updated");
-      closeEditModal();
-      setNoteToEdit(defaultNote);
-      fetchTodos(page, limit, query);
-    }
+    updateNote(noteToEdit);
   };
 
   const renderNotes = notes.map(({ _id, title, content, createdAt }, index) => {
@@ -93,16 +104,12 @@ const Notes = ({ notes, setNotes }) => {
     );
   });
 
-  useEffect(() => {
-    fetchNotes(page, limit);
-  }, []);
-
   return (
     <Box>
       <Box className="w-[80%] mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
         <Box>
           <Box className="flex justify-between items-center my-12">
-            <AddNoteForm />
+            <AddNoteForm fetchNotes={fetchNotes} />
             <Box
               sx={{
                 maxWidth: 100,
@@ -158,6 +165,7 @@ const Notes = ({ notes, setNotes }) => {
         closeModal={closeDeleteModal}
         handleDelete={handleDelete}
         noteToEdit={noteToEdit}
+        isPending={isDeleting}
       />
 
       <EditModal
@@ -165,6 +173,8 @@ const Notes = ({ notes, setNotes }) => {
         closeModal={closeEditModal}
         handleUpdate={handleUpdate}
         noteToEdit={noteToEdit}
+        setNoteToEdit={setNoteToEdit}
+        isPending={isUpdating}
       />
     </Box>
   );

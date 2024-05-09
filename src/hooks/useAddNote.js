@@ -4,7 +4,7 @@ import {
   CustomErrorAlert,
   CustomSuccessAlert,
   defaultNote,
-} from "../../utils/general.js";
+} from "../utils/general.js";
 
 const useAddNote = (fetchNotes, setNewNote, toggleExpandedInputs) => {
   let [isLoading, setIsLoading] = useState(false);

@@ -2,8 +2,15 @@ import { Dialog } from "@headlessui/react";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import CustomDialog from "../../CustomDialog/CustomDialog.jsx";
+import LoadingSVG from "../../../utils/LoadingSVG.jsx";
 
-const DeleteModal = ({ isOpen, closeModal, handleDelete, noteToEdit }) => {
+const DeleteModal = ({
+  isOpen,
+  closeModal,
+  handleDelete,
+  noteToEdit,
+  isPending,
+}) => {
   return (
     <CustomDialog isOpen={isOpen} closeModal={closeModal}>
       <Dialog.Title
@@ -19,13 +26,21 @@ const DeleteModal = ({ isOpen, closeModal, handleDelete, noteToEdit }) => {
       </Box>
 
       <Box className="mt-4 flex justify-end gap-2">
-        <Button
+        <button
           type="button"
-          className="capitalize text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
+          disabled={isPending}
           onClick={handleDelete}
+          className="capitalize text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
         >
-          Yes, Sure!
-        </Button>
+          {isPending ? (
+            <>
+              <LoadingSVG />
+              Loading...
+            </>
+          ) : (
+            "Yes, Sure!"
+          )}
+        </button>
         <Button
           type="button"
           className="capitalize text-black rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"

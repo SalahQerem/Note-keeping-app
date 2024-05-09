@@ -1,9 +1,17 @@
 import { Dialog } from "@headlessui/react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import React from "react";
 import CustomDialog from "../../CustomDialog/CustomDialog.jsx";
+import LoadingSVG from "../../../utils/LoadingSVG.jsx";
 
-const EditModal = ({ isOpen, closeModal, handleUpdate, noteToEdit }) => {
+const EditModal = ({
+  isOpen,
+  closeModal,
+  handleUpdate,
+  noteToEdit,
+  setNoteToEdit,
+  isPending,
+}) => {
   let isValidEditNoteInputs =
     noteToEdit.title.trim() !== "" && noteToEdit.content.trim() !== "";
   return (
@@ -39,13 +47,20 @@ const EditModal = ({ isOpen, closeModal, handleUpdate, noteToEdit }) => {
         </Box>
 
         <Box className="mt-4 flex justify-end gap-2">
-          <Button
+          <button
             type="submit"
+            disabled={!isValidEditNoteInputs || isPending}
             className="text-white capitalize rounded-md px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed"
-            disabled={!isValidEditNoteInputs}
           >
-            Update
-          </Button>
+            {isPending ? (
+              <>
+                <LoadingSVG />
+                Loading...
+              </>
+            ) : (
+              "Update Note"
+            )}
+          </button>
           <Button
             type="button"
             className="rounded-md bg-[#dddddd] text-black capitalize hover:bg-gray-300 px-4 py-2 text-sm font-medium"
