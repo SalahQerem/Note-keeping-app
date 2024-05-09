@@ -7,11 +7,10 @@ import {
   StyledInputBase,
 } from "./computedstyles.js";
 
-const Navbar = (fetchNotes) => {
-  let [query, setQuery] = useState("");
+const Navbar = ({ fetchNotes, page, limit }) => {
   const handleSearch = (e) => {
     const title = e.target.value;
-    setQuery(title);
+    fetchNotes(page, limit, title);
   };
 
   return (

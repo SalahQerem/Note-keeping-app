@@ -26,7 +26,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Navbar fetchNotes={fetchNotes} />
+      <Navbar fetchNotes={fetchNotes} page={page} limit={limit} />
       <Notes
         notes={notes}
         fetchNotes={fetchNotes}
