@@ -1,41 +1,47 @@
-import React, { useEffect, useState } from "react";
-import Note from "../Note/Note.jsx";
-import axios from "axios";
-import Loader from "../Loader/Loader.jsx";
-import { AppBar, Toolbar, Typography } from "@mui/material";
 import { ThemeProvider } from "@emotion/react";
+import { Dialog } from "@headlessui/react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  AppBar,
   Box,
   FormControl,
   InputLabel,
   MenuItem,
   Pagination,
   Select,
+  Toolbar,
+  Typography,
 } from "@mui/material";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import CustomDialog from "../CustomDialog/CustomDialog.jsx";
+import Loader from "../Loader/Loader.jsx";
+import Note from "../Note/Note.jsx";
 import {
   CustomAlert,
   Search,
   SearchIconWrapper,
   StyledInputBase,
   backgroundColors,
+  defualtNote,
   theme,
 } from "./utils.js";
-import CustomDialog from "../CustomDialog/CustomDialog.jsx";
-import { Dialog } from "@headlessui/react";
 
 const Notes = () => {
-  const defualtNote = { title: "", content: "" };
   let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   let [isEditModalOpen, setIsEditModalOpen] = useState(false);
   let [isCancelAddNoteModalOpen, setIsCancelAddNoteModalOpen] = useState(false);
+
   let [notes, setNotes] = useState([]);
   let [isLoading, setIsLoading] = useState(true);
+
   let [numOfPages, setNumOfPages] = useState(10);
   let [page, setPage] = useState(1);
   let [limit, setLimit] = useState(5);
   let [query, setQuery] = useState("");
+
   let [noteToEdit, setNoteToEdit] = useState(defualtNote);
+
   let [isNewNoteInputsExpanded, setIsNewNoteInputsExpanded] = useState(false);
   let [newNoteTitle, setNewNoteTitle] = useState("");
   let [newNoteContent, setNewNoteContent] = useState("");

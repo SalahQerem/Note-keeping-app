@@ -76,3 +76,5 @@ export const CustomAlert = (message) => {
     theme: "light",
   });
 };
+
+export const defualtNote = { title: "", content: "" };

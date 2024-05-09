@@ -1,10 +1,14 @@
 .deleteBtn {
-  visibility: hidden;
-  opacity: 0;
+  /* visibility: hidden; */
+  /* opacity: 0; */
   transition: ease-in-out 0.2s;
 }
 
+.deleteBtn:hover {
+  color: red;
+}
+
 .note:hover .deleteBtn {
-  visibility: visible;
+  /* visibility: visible; */
   opacity: 1;
 }
