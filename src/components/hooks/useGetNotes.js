@@ -5,11 +5,11 @@ import axios from "axios";
 const useGetNotes = (setNotes, setNumOfPages) => {
   let [isLoading, setIsLoading] = useState(true);
 
-  const fetchNotes = async (page = 1, limit = 5, title = "") => {
+  const fetchNotes = async (page = 1, limit = 5) => {
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `https://note-keeping-api.onrender.com/notes?page=${page}&limit=${limit}&title=${title}`
+        `https://note-keeping-api.onrender.com/notes?page=${page}&limit=${limit}`
       );
       setNotes(data.notes);
       setNumOfPages(data.numOfPages);

@@ -11,46 +11,29 @@ import React, { useEffect, useState } from "react";
 import { backgroundColors, defaultNote } from "../../utils/general.js";
 import Loader from "../Loader/Loader.jsx";
 import Note from "../Note/Note.jsx";
-import useAddNote from "../hooks/useAddNote.js";
 import useGetNotes from "../hooks/useGetNotes.js";
-import CancelModal from "./Modals/CancelModal.jsx";
+import useNotesModals from "../hooks/useNotesModals.js";
 import DeleteModal from "./Modals/DeleteModal.jsx";
 import EditModal from "./Modals/EditModal.jsx";
-import useNotesModals from "../hooks/useNotesModals.js";
+import AddNoteForm from "../AddNoteForm/AddNoteForm.jsx";
 
 const Notes = ({ notes, setNotes }) => {
   let [numOfPages, setNumOfPages] = useState(10);
   let [page, setPage] = useState(1);
   let [limit, setLimit] = useState(5);
 
-  let [newNote, setNewNote] = useState(defaultNote);
   let [noteToEdit, setNoteToEdit] = useState(defaultNote);
 
-  let [isNewNoteInputsExpanded, setIsNewNoteInputsExpanded] = useState(false);
-
-  const toggleExpandedInputs = () => {
-    setIsNewNoteInputsExpanded((prev) => !prev);
-  };
-
   const { fetchNotes, isFetching } = useGetNotes(setNotes, setNumOfPages);
-  const { addNote, isPending } = useAddNote(
-    fetchNotes,
-    setNewNote,
-    toggleExpandedInputs
-  );
 
   const {
     DeleteModal: { isDeleteModalOpen, openDeleteModal, closeDeleteModal },
-    CancelModal: { isCancelModalOpen, openCancelModal, closeCancelModal },
     EditModal: { isEditModalOpen, openEditModal, closeEditModal },
   } = useNotesModals();
 
-  let isValidNewNoteInputs =
-    newNote.title.trim() !== "" && newNote.content.trim() !== "";
-
   const handlePageChange = (e, value) => {
     setPage(value);
-    fetchNotes(value);
+    fetchNotes(value, limit);
   };
 
   const handleLimitChange = (e, { props }) => {
@@ -73,17 +56,6 @@ const Notes = ({ notes, setNotes }) => {
       fetchTodos(page, limit, query);
       CustomAlert(`${noteToEdit.title} successfully deleted`);
     }
-  };
-
-  const handleCancelNewNote = () => {
-    setNewNote(defaultNote);
-    closeCancelModal();
-    toggleExpandedInputs();
-  };
-
-  const handleSubmitNewNote = async (e) => {
-    e.preventDefault();
-    addNote(newNote);
   };
 
   const updateHandler = (note) => {
@@ -129,57 +101,8 @@ const Notes = ({ notes, setNotes }) => {
     <Box>
       <Box className="w-[80%] mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
         <Box>
-          <Box className="flex justify-between items-center">
-            <form className="my-12 w-full" onSubmit={handleSubmitNewNote}>
-              {isNewNoteInputsExpanded ? (
-                <Box className="flex flex-col gap-2 w-[80%]">
-                  <input
-                    type="text"
-                    name="title"
-                    placeholder="Title"
-                    value={newNote.title}
-                    onChange={(e) => {
-                      setNewNote({ ...newNote, title: e.target.value });
-                    }}
-                    className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
-                  />
-                  <input
-                    type="text"
-                    name="content"
-                    placeholder="Content"
-                    value={newNote.content}
-                    onChange={(e) => {
-                      setNewNote({ ...newNote, content: e.target.value });
-                    }}
-                    className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
-                  />
-                  <Box className="flex items-center justify-end gap-2">
-                    <button
-                      type="submit"
-                      disabled={!isValidNewNoteInputs}
-                      className="text-white rounded-md px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed"
-                    >
-                      Add Note
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
-                      onClick={openCancelModal}
-                    >
-                      Cancel
-                    </button>
-                  </Box>
-                </Box>
-              ) : (
-                <button
-                  type="button"
-                  className="border border-slate-300 w-[80%] rounded-md px-4 py-2 shadow-lg text-left"
-                  onClick={toggleExpandedInputs}
-                >
-                  Take a note...
-                </button>
-              )}
-            </form>
+          <Box className="flex justify-between items-center my-12">
+            <AddNoteForm />
             <Box
               sx={{
                 maxWidth: 100,
@@ -219,7 +142,7 @@ const Notes = ({ notes, setNotes }) => {
             </Box>
           </Box>
           <Box id="notes" className="flex flex-wrap gap-2 items-start">
-            {isFetching || isPending ? <Loader /> : renderNotes}
+            {isFetching ? <Loader /> : renderNotes}
           </Box>
         </Box>
         <Box className="flex justify-center py-3 mb-5">
@@ -236,11 +159,7 @@ const Notes = ({ notes, setNotes }) => {
         handleDelete={handleDelete}
         noteToEdit={noteToEdit}
       />
-      <CancelModal
-        isOpen={isCancelModalOpen}
-        closeModal={closeCancelModal}
-        handleCancel={handleCancelNewNote}
-      />
+
       <EditModal
         isOpen={isEditModalOpen}
         closeModal={closeEditModal}

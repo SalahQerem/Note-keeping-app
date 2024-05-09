@@ -10,7 +10,6 @@ const useAddNote = (fetchNotes, setNewNote, toggleExpandedInputs) => {
   let [isLoading, setIsLoading] = useState(false);
 
   const addNote = async (note) => {
-    setIsAdded(false);
     try {
       setIsLoading(true);
       const res = await axios.post(
@@ -23,7 +22,6 @@ const useAddNote = (fetchNotes, setNewNote, toggleExpandedInputs) => {
         setNewNote(defaultNote);
         toggleExpandedInputs();
       }
-      setIsAdded(true);
     } catch (error) {
       CustomErrorAlert(error);
     } finally {
