@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   AppBar,
   Box,
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -188,7 +189,7 @@ const Notes = () => {
   }, []);
 
   return (
-    <div>
+    <Box>
       <ThemeProvider theme={theme}>
         <AppBar position="static">
           <Toolbar sx={{ display: "flex", alignItems: "center", gap: "2rem" }}>
@@ -219,12 +220,12 @@ const Notes = () => {
           </Toolbar>
         </AppBar>
       </ThemeProvider>
-      <div className="w-[80%] mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
-        <div>
-          <div className="flex justify-between items-center">
+      <Box className="w-[80%] mx-auto h-[calc(100vh-64px)] flex flex-col justify-between">
+        <Box>
+          <Box className="flex justify-between items-center">
             <form className="my-12 w-full" onSubmit={handleNewNoteSubmit}>
               {isNewNoteInputsExpanded ? (
-                <div className="flex flex-col gap-2 w-[80%]">
+                <Box className="flex flex-col gap-2 w-[80%]">
                   <input
                     type="text"
                     name="title"
@@ -245,7 +246,7 @@ const Notes = () => {
                     }}
                     className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
                   />
-                  <div className="flex items-center justify-end gap-2">
+                  <Box className="flex items-center justify-end gap-2">
                     <button
                       type="submit"
                       disabled={!isValidNewNoteInputs}
@@ -260,8 +261,8 @@ const Notes = () => {
                     >
                       Cancel
                     </button>
-                  </div>
-                </div>
+                  </Box>
+                </Box>
               ) : (
                 <button
                   type="button"
@@ -310,19 +311,19 @@ const Notes = () => {
                 </Select>
               </FormControl>
             </Box>
-          </div>
-          <div id="notes" className="flex flex-wrap gap-2 items-start">
+          </Box>
+          <Box id="notes" className="flex flex-wrap gap-2 items-start">
             {isLoading ? <Loader /> : renderNotes}
-          </div>
-        </div>
-        <div className="flex justify-center py-3 mb-5">
+          </Box>
+        </Box>
+        <Box className="flex justify-center py-3 mb-5">
           <Pagination
             count={numOfPages}
             page={page}
             onChange={handlePageChange}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
       <CustomDialog isOpen={isDeleteModalOpen} closeModal={closeDeleteModal}>
         <Dialog.Title
           as="h3"
@@ -330,28 +331,28 @@ const Notes = () => {
         >
           Note Deletion
         </Dialog.Title>
-        <div className="mt-2">
-          <p className="text-sm text-gray-500">
+        <Box className="mt-2">
+          <Typography variant="body1" className="text-sm text-gray-500">
             {`Are you sure you wish to delete ${noteToEdit.title} Note ?`}
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        <div className="mt-4 flex justify-end gap-2">
-          <button
+        <Box className="mt-4 flex justify-end gap-2">
+          <Button
             type="button"
-            className="text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
+            className="capitalize text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
             onClick={handleDelete}
           >
             Yes, Sure!
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
+            className="capitalize text-black rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
             onClick={closeDeleteModal}
           >
             Cancel
-          </button>
-        </div>
+          </Button>
+        </Box>
       </CustomDialog>
       <CustomDialog
         isOpen={isCancelAddNoteModalOpen}
@@ -363,28 +364,28 @@ const Notes = () => {
         >
           New Note Cancelation
         </Dialog.Title>
-        <div className="mt-2">
-          <p className="text-sm text-gray-500">
+        <Box className="mt-2">
+          <Typography variant="body1" className="text-sm text-gray-500">
             {`Are you sure you wish to cancel this Note ?`}
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        <div className="mt-4 flex justify-end gap-2">
-          <button
+        <Box className="mt-4 flex justify-end gap-2">
+          <Button
             type="button"
-            className="text-white rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
+            className="text-white capitalize rounded-md px-4 py-2 text-sm font-medium bg-[#c2344d] hover:bg-red-800"
             onClick={handleNewNoteCancel}
           >
             Yes, Sure!
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
+            className="rounded-md capitalize bg-[#dddddd] text-black hover:bg-gray-300 px-4 py-2 text-sm font-medium"
             onClick={closeCancelAddNoteModal}
           >
             Cancel
-          </button>
-        </div>
+          </Button>
+        </Box>
       </CustomDialog>
       <CustomDialog isOpen={isEditModalOpen} closeModal={closeEditModal}>
         <Dialog.Title
@@ -394,7 +395,7 @@ const Notes = () => {
           Update Note
         </Dialog.Title>
         <form onSubmit={handleUpdate}>
-          <div className="mt-5 flex flex-col gap-2">
+          <Box className="mt-5 flex flex-col gap-2">
             <input
               type="text"
               name="title"
@@ -405,7 +406,7 @@ const Notes = () => {
               }}
               className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
             />
-            <input
+            <textarea
               type="text"
               name="content"
               placeholder="Content"
@@ -415,27 +416,27 @@ const Notes = () => {
               }}
               className="border border-slate-300 rounded-md px-3 py-2 shadow-lg"
             />
-          </div>
+          </Box>
 
-          <div className="mt-4 flex justify-end gap-2">
-            <button
+          <Box className="mt-4 flex justify-end gap-2">
+            <Button
               type="submit"
-              className="text-white rounded-md px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed"
+              className="text-white capitalize rounded-md px-4 py-2 text-sm font-medium bg-indigo-500 hover:bg-indigo-700 disabled:bg-indigo-200 disabled:cursor-not-allowed"
               disabled={!isValidEditNoteInputs}
             >
               Update
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="rounded-md bg-[#dddddd] hover:bg-gray-300 px-4 py-2 text-sm font-medium"
+              className="rounded-md bg-[#dddddd] text-black capitalize hover:bg-gray-300 px-4 py-2 text-sm font-medium"
               onClick={closeEditModal}
             >
               Cancel
-            </button>
-          </div>
+            </Button>
+          </Box>
         </form>
       </CustomDialog>
-    </div>
+    </Box>
   );
 };
 
